@@ -31,12 +31,6 @@ if(window.addEventListener) {
     var clearBtn = document.getElementById('clearBtn');
     var submitBtn = document.getElementById('submitBtn');
     var typeText = document.getElementById('typeText');
-
-    clearBtn.addEventListener('click', clearDrawCanvas, false);
-    submitBtn.addEventListener('click', function() {
-      var type = processSpine();
-      typeText.textContent = type;
-    }, false);
   }
 
   function draw_head_and_legs(ctx) {
@@ -82,6 +76,7 @@ if(window.addEventListener) {
     // This is called when you start holding down the mouse button.
     // This starts the pencil drawing.
     this.mousedown = function (ev) {
+      clearDrawCanvas(ev);
       drawCtx.beginPath();
       drawCtx.moveTo(ev._x, ev._y);
       tool.started = true;
@@ -102,6 +97,8 @@ if(window.addEventListener) {
       if (tool.started) {
         tool.mousemove(ev);
         tool.started = false;
+        var type = processSpine();
+        typeText.textContent = type;
       }
     };
   };
