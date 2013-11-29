@@ -1,4 +1,9 @@
-// Keep everything in anonymous function, called on window load.
+/**
+ * spine-draw.js
+ * Daniel Goldbach
+ * 2013 November 29
+ */
+
 if(window.addEventListener) {
   window.addEventListener('load', function () {
     // var canvas, context, canvaso, ctx;
