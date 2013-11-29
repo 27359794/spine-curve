@@ -5,8 +5,8 @@
   <title>Paint</title>
   <style type="text/css">
     #container { position: relative; }
-    #imageView { border: 1px solid #000; }
-    #imageTemp {
+    #staticCanvas { border: 1px solid #000; }
+    #drawCanvas {
       position: absolute;
       top: 1px;
       left: 1px;
@@ -17,7 +17,7 @@
 </head>
 <body>
   <div id="container">
-    <canvas id="imageView" width="400" height="300">
+    <canvas id="staticCanvas" width="400" height="600">
       <p>
         Unfortunately, your browser is currently unsupported by this web
         application.  We are sorry for the inconvenience. Please use one of the
@@ -34,23 +34,22 @@
 // Keep everything in anonymous function, called on window load.
 if(window.addEventListener) {
   window.addEventListener('load', function () {
-    var canvas, context, canvaso, contexto;
+    var canvas, context, canvaso, ctx;
 
-  // The active tool instance.
+  // The active tool instance (always pencil here)
   var tool;
-  var tool_default = 'pencil';
 
   function init () {
     // Find the canvas element.
-    canvaso = document.getElementById('imageView');
+    canvaso = document.getElementById('staticCanvas');
+    ctx = canvaso.getContext('2d');
 
-    // Get the 2D canvas context.
-    contexto = canvaso.getContext('2d');
+    draw_head_and_legs(ctx);
 
     // Add the temporary canvas.
     var container = canvaso.parentNode;
     canvas = document.createElement('canvas');
-    canvas.id     = 'imageTemp';
+    canvas.id     = 'drawCanvas';
     canvas.width  = canvaso.width;
     canvas.height = canvaso.height;
     container.appendChild(canvas);
@@ -63,6 +62,19 @@ if(window.addEventListener) {
     canvas.addEventListener('mousedown', ev_canvas, false);
     canvas.addEventListener('mousemove', ev_canvas, false);
     canvas.addEventListener('mouseup',   ev_canvas, false);
+  }
+
+  function draw_head_and_legs(ctx) {
+    // Draw head
+    ctx.beginPath();
+    ctx.arc(150, 100, 40, 0, 2*Math.PI);
+    ctx.stroke();
+
+    // Draw legs
+    ctx.moveTo(150, 320);
+    ctx.lineTo(250, 320);
+    ctx.lineTo(250, 420);
+    ctx.stroke();
   }
 
   // The general-purpose event handler. This function just determines the mouse
@@ -83,11 +95,11 @@ if(window.addEventListener) {
     }
   }
 
-  // This function draws the #imageTemp canvas on top of #imageView, after which
-  // #imageTemp is cleared. This function is called each time when the user
+  // This function draws the #drawCanvas canvas on top of #staticCanvas, after which
+  // #drawCanvas is cleared. This function is called each time when the user
   // completes a drawing operation.
   function img_update () {
-    contexto.drawImage(canvas, 0, 0);
+    ctx.drawImage(canvas, 0, 0);
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
@@ -119,7 +131,6 @@ if(window.addEventListener) {
       if (tool.started) {
         tool.mousemove(ev);
         tool.started = false;
-        img_update();
       }
     };
   };
